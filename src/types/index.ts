@@ -25,7 +25,9 @@ export interface useAuthStoreType {
     authUser: useAuthUserType | null;
     isLoginLoading: boolean;
     isRegisterLoading: boolean;
+    imageUploadLoading: boolean;
     signIn: (data: FormDataType) => Promise<void>;
     checkUser: () => Promise<void>;
-    signUp: (data: FormDataTypeSignUp) => Promise<void>; 
+    signUp: (data: FormDataTypeSignUp) => Promise<void>;
+    updatePhoto: (data: any) => Promise<void>;
 }

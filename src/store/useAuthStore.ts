@@ -13,6 +13,7 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
     authUser: null,
     isLoginLoading: false,
     isRegisterLoading: false,
+    imageUploadLoading: false,
 
     checkUser: async () => {
         try {
@@ -38,14 +39,7 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
             set({ authUser: res.data.data });
             toast.success("Login SuccessFull")
         } catch (error) {
-            if (error instanceof AxiosError) {
-                if (
-                    error.response &&
-                    error.response.data &&
-                    error.response.data.message
-                )
-                    toast.error(error.response.data.message)
-            }
+            errorFunction(error)
             set({ isLoginLoading: false });
         }
 
@@ -57,9 +51,9 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
     signUp: async (data) => {
         set({ isRegisterLoading: true });
         try {
-            const  res = await axiosIntance.post("/auth/sign-up", data);
+            const res = await axiosIntance.post("/auth/sign-up", data);
             set({ authUser: res.data.data });
-        }catch (error) {
+        } catch (error) {
             if (error instanceof AxiosError) {
                 if (
                     error.response &&
@@ -74,5 +68,32 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
         finally {
             set({ isRegisterLoading: false });
         }
+    },
+    updatePhoto: async (data) => {
+        set({ imageUploadLoading: true });
+        try {
+            const res = await axiosIntance.post("/auth/update-photo",data)
+            console.log(res);
+            
+            set({ authUser: res.data.data });
+        } catch (error) {
+            errorFunction(error)
+            set({ imageUploadLoading: false });
+        }
+        finally {
+            set({ imageUploadLoading: false });
+        }
     }
 }));
+
+
+function errorFunction(error: any) {
+    if (error instanceof AxiosError) {
+        if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+        )
+            toast.error(error.response.data.message)
+    }
+}
