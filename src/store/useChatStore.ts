@@ -1,20 +1,23 @@
 import { create } from "zustand";
 import { MessageType, useAuthUserType } from "../types";
 import { axiosIntance } from "../lib";
-import { errorFunction } from "./useAuthStore"; // Убрал лишний импорт useAuthStore
+import { errorFunction } from "./useAuthStore"; 
+
+interface SendMessageData {
+  text: string;
+  attachment?: string; 
+}
 
 interface useChatStoreType {
   chatUser: useAuthUserType | null;
   selectedUser: (data: useAuthUserType | null) => void;
   getUsers: () => Promise<void>;
   getMessage: (userId: string) => Promise<void>;
-  sendMessage: (messageData: any) => Promise<void>;
+  sendMessage: (messageData: SendMessageData) => Promise<void>;
   users: useAuthUserType[] | null;
   isUsersLoading: boolean;
   messages: MessageType[] | null;
   isMessagesLoading: boolean;
-  // subscribeToMessage: () => void;
-  // unsubscribeFromMessages: () => void;
 }
 
 export const useChatStore = create<useChatStoreType>((set, get) => ({
@@ -52,7 +55,7 @@ export const useChatStore = create<useChatStoreType>((set, get) => ({
     }
   },
 
-  sendMessage: async (messageData) => {
+  sendMessage: async (messageData: SendMessageData) => {
     const { chatUser, messages } = get();
     if (!chatUser) return;
 
@@ -60,7 +63,7 @@ export const useChatStore = create<useChatStoreType>((set, get) => ({
     try {
       const res = await axiosIntance.post(`/message/send/${chatUser._id}`, messageData);
       set({
-        messages: [...(messages || []), res.data.data],
+        messages: [...(messages || []), res.data.data], 
       });
     } catch (error) {
       errorFunction(error);
@@ -68,14 +71,4 @@ export const useChatStore = create<useChatStoreType>((set, get) => ({
       set({ isMessagesLoading: false });
     }
   },
-
-  // subscribeToMessage: () => {
-  //   // Здесь должна быть логика подписки (например, через WebSocket или Pusher)
-  //   console.log("Subscribed to messages");
-  // },
-
-  // unsubscribeFromMessages: () => {
-  //   // Здесь должна быть логика отписки
-  //   console.log("Unsubscribed from messages");
-  // },
 }));

@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { io, Socket } from "socket.io-client";
 import { axiosIntance } from "../lib";
 import { useAuthStoreType } from "../types";
 import { AxiosError } from "axios";
+import { io } from "socket.io-client";
 import toast from "react-hot-toast";
 
 export const useAuthStore = create<useAuthStoreType>((set, get) => ({
@@ -10,7 +10,7 @@ export const useAuthStore = create<useAuthStoreType>((set, get) => ({
     isLoginLoading: false,
     isRegisterLoading: false,
     imageUploadLoading: false,
-    socket: null as Socket | null,
+    socket: null,
     onlineUsers: [],
 
     checkUser: async () => {
@@ -18,11 +18,7 @@ export const useAuthStore = create<useAuthStoreType>((set, get) => ({
             const res = await axiosIntance.get("/auth/check");
             set({ authUser: res.data.data });
         } catch (error) {
-            if (error instanceof AxiosError) {
-                if (error.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                }
-            }
+            errorFunction(error);
             set({ isLoginLoading: false });
         }
     },
@@ -46,11 +42,7 @@ export const useAuthStore = create<useAuthStoreType>((set, get) => ({
             const res = await axiosIntance.post("/auth/sign-up", data);
             set({ authUser: res.data.data });
         } catch (error) {
-            if (error instanceof AxiosError) {
-                if (error.response?.data?.message) {
-                    toast.error(error.response.data.message);
-                }
-            }
+            errorFunction(error);
         } finally {
             set({ isRegisterLoading: false });
         }
@@ -78,27 +70,24 @@ export const useAuthStore = create<useAuthStoreType>((set, get) => ({
         }
     },
 
-    // connectSocket: () => {
-    //     const { authUser } = get();
-    //     if (!authUser || get().socket?.connected) return;
+    connectSocket: () => {
+        const { authUser } = get();
+        if (!authUser || get().socket?.connected) return;
+        const socket = io("https://chat-app-bb-tai4.onrender.com", {
+            query: { userId: authUser._id },
+            withCredentials: true,
+        });
+        socket.connect();
+        set({ socket });
+        socket.on("getOnlineUsers", (users: string[]) => {
+            set({ onlineUsers: users });
+        });
+    },
 
-    //     const socket = io(BASE_URL, {
-    //         query: {
-    //             userId: authUser._id,
-    //         },
-    //     });
-    //     socket.connect();
+    disConnectSocket: () => {
+        if (get().socket?.connected) get().socket?.disconnect();
+    }
 
-    //     set({ socket: socket });
-
-    //     socket.on("getOnlineUsers", (userIds) => {
-    //         set({ onlineUsers: userIds });
-    //     });
-    // },
-
-    // disconnectSocket: () => {
-    //     if (get().socket?.connected) get().socket.disconnect();
-    // },
 }));
 
 export function errorFunction(error: any) {

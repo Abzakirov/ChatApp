@@ -9,16 +9,14 @@ const MessagesInput = () => {
   const { sendMessage } = useChatStore();
 
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!text.trim()) return;
-
-    console.log(text);
+    e.preventDefault(); 
+    if (!text.trim()) return; 
 
     await sendMessage({
       text: text.trim(),
     });
 
-    setText("");
+    setText(""); 
   };
 
   return (
@@ -28,7 +26,7 @@ const MessagesInput = () => {
           <input
             type="text"
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => setText(e.target.value)} 
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
             placeholder="Type a message..."
           />
@@ -42,7 +40,6 @@ const MessagesInput = () => {
 
         <button
           type="button"
-          onClick={() => fileInputRef.current?.click()}
           className="hidden sm:flex btn btn-circle"
         >
           <Image size={20} />

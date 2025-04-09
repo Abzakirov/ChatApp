@@ -1,24 +1,24 @@
+import { Socket } from "socket.io-client";
 
 export interface FormDataType {
-    email: string,
-    password: string
+    email: string;
+    password: string;
 }
 
 export interface FormDataTypeSignUp {
-    email: string,
-    password: string,
-    fullName: string
+    email: string;
+    password: string;
+    fullName: string;
 }
 
-
 export interface useAuthUserType {
-    _id: string
-    email: string,
-    fullName: string,
-    password: string,
-    profilePic: string,
-    createdAt: string,
-    updatedAt: string
+    _id: string;
+    email: string;
+    fullName: string;
+    password: string;
+    profilePic: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface useAuthStoreType {
@@ -30,9 +30,12 @@ export interface useAuthStoreType {
     checkUser: () => Promise<void>;
     signUp: (data: FormDataTypeSignUp) => Promise<void>;
     updatePhoto: (data: any) => Promise<void>;
-    logOut: () => Promise<void>
+    logOut: () => Promise<void>;
+    socket: Socket | null;
+    onlineUsers: string[];
+    disConnectSocket: () => void;  
+    connectSocket: () => void;     
 }
-
 
 export interface MessageType {
     _id: string;
