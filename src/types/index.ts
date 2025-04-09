@@ -30,4 +30,15 @@ export interface useAuthStoreType {
     checkUser: () => Promise<void>;
     signUp: (data: FormDataTypeSignUp) => Promise<void>;
     updatePhoto: (data: any) => Promise<void>;
+    logOut: () => Promise<void>
+}
+
+
+export interface MessageType {
+    _id: string;
+    senderId: string;
+    receiverId: string;
+    text: string;
+    createdAt: string;
+    updatedAt: string;
 }

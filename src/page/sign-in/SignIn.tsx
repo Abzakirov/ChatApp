@@ -19,7 +19,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="h-screen grid lg:grid-cols-2">
+    <div className="h-full grid lg:grid-cols-2">
       <div className="flex items-center justify-center flex-col p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">

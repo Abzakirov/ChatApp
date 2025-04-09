@@ -29,7 +29,7 @@ const RouterComponent = () => {
         />
         <Route
           path="/sign-in"
-          element={!authUser ? <SignIn /> : <Navigate to="/sign-in" />}
+          element={!authUser ? <SignIn /> : <Navigate to="/" />}
         />
             <Route
           path="/sign-up"
